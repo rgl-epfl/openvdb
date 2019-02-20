@@ -1,0 +1,15 @@
+[submodule "ext/tbb"]
+	path = ext/tbb
+	url = https://github.com/wjakob/tbb
+[submodule "ext/openexr"]
+	path = ext/openexr
+	url = https://github.com/mitsuba-renderer/openexr.git
+[submodule "ext/zlib"]
+	path = ext/zlib
+	url = https://github.com/mitsuba-renderer/zlib
+[submodule "ext/c-blosc"]
+	path = ext/c-blosc
+	url = https://github.com/Blosc/c-blosc
+[submodule "ext/glfw"]
+	path = ext/glfw
+	url = https://github.com/wjakob/glfw.git

@@ -38,14 +38,23 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-OPTION ( OPENVDB_BUILD_UNITTESTS "Build the OpenVDB unit tests" ON )
+
+ADD_DEFINITIONS ( -fPIC )
+add_subdirectory(ext ext_build)
+include_directories(SYSTEM ${OPENEXR_INCLUDE_DIRS})
+
+# TODO: Current CMake Setup does not support building the tests or the viewer
+OPTION ( OPENVDB_BUILDS_DEPS "Build the dependencies from the submodules, rather than using find_package" ON )
+OPTION ( OPENVDB_BUILD_VIEWER "Build the OpenGL viewer" OFF )
+
+OPTION ( OPENVDB_BUILD_UNITTESTS "Build the OpenVDB unit tests" OFF )
 OPTION ( OPENVDB_BUILD_DOCS "Build the OpenVDB documentation" OFF )
-OPTION ( OPENVDB_BUILD_PYTHON_MODULE "Build the pyopenvdb Python module" ON )
+OPTION ( OPENVDB_BUILD_PYTHON_MODULE "Build the pyopenvdb Python module" OFF )
 OPTION ( OPENVDB_BUILD_HOUDINI_SOPS "Build the Houdini SOPs" OFF )
 OPTION ( OPENVDB_BUILD_MAYA_PLUGIN "Build the Maya plugin" OFF )
 OPTION ( OPENVDB_BUILD_CORE "Build the OpenVDB core" ON )
 OPTION ( OPENVDB_ENABLE_RPATH "Build with RPATH information" ON )
-OPTION ( OPENVDB_ENABLE_3_ABI_COMPATIBLE "Build with OpenVDB v3 ABI" ON )
+OPTION ( OPENVDB_ENABLE_3_ABI_COMPATIBLE "Build with OpenVDB v3 ABI" OFF )
 OPTION ( OPENVDB_DISABLE_BOOST_IMPLICIT_LINKING "Disable the implicit linking of Boost libraries on Windows" ON )
 OPTION ( OPENVDB_CXX_STRICT "Enable or disable a set of pre-defined compiler warnings for clang and gcc" OFF )
 
