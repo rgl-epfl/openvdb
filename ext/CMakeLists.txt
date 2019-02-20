@@ -54,8 +54,19 @@ set(Ilmbase_HALF_LIBRARY ${Ilmbase_HALF_LIBRARY} PARENT_SCOPE)
 
 
 # CopyIlmBaseLibs
+# Copy the EXR head files to a common folder (matching folder structure expected by OpenVDB)
+file(GLOB OPENEXR_HEADER_FILES
+                  "${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Imath/*.h"
+                  "${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Iex/*.h"
+                  "${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Half/*.h"
+                  "${CMAKE_CURRENT_SOURCE_DIR}/openexr/OpenEXR/IlmImf/*.h"
+                  "${CMAKE_CURRENT_BINARY_DIR}/openexr/OpenEXR/config/*.h"
+                  "${CMAKE_CURRENT_BINARY_DIR}/openexr/IlmBase/config/*.h")
+                 
+file(COPY ${OPENEXR_HEADER_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/openexrheaders/OpenEXR)
 
 set(OPENEXR_INCLUDE_DIRS
+  ${CMAKE_CURRENT_SOURCE_DIR}/openexrheaders
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Imath
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Iex
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Half
@@ -66,6 +77,7 @@ set(OPENEXR_INCLUDE_DIRS ${OPENEXR_INCLUDE_DIRS} PARENT_SCOPE)
 
 
 set(ILMBASE_INCLUDE_DIRS
+  ${CMAKE_CURRENT_SOURCE_DIR}/openexrheaders
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Imath
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Iex
   ${CMAKE_CURRENT_SOURCE_DIR}/openexr/IlmBase/Half
@@ -124,8 +136,8 @@ add_subdirectory(c-blosc)
 set_property(TARGET blosc_static blosc_shared PROPERTY FOLDER "dependencies")
 set(BLOSC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/c-blosc/blosc)
 set(BLOSC_INCLUDE_DIR ${BLOSC_INCLUDE_DIR} PARENT_SCOPE)
-set(BLOSC_LIBRARY "blosc" PARENT_SCOPE)
-set(BLOSC_blosc_LIBRARY "blosc")
+set(BLOSC_LIBRARY blosc_static PARENT_SCOPE)
+set(BLOSC_blosc_LIBRARY blosc_static)
 set(BLOSC_blosc_LIBRARY ${BLOSC_blosc_LIBRARY} PARENT_SCOPE)
 
 
