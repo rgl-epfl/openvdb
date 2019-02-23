@@ -62,7 +62,7 @@ file(GLOB OPENEXR_HEADER_FILES
                   "${CMAKE_CURRENT_SOURCE_DIR}/openexr/OpenEXR/IlmImf/*.h"
                   "${CMAKE_CURRENT_BINARY_DIR}/openexr/OpenEXR/config/*.h"
                   "${CMAKE_CURRENT_BINARY_DIR}/openexr/IlmBase/config/*.h")
-                 
+
 file(COPY ${OPENEXR_HEADER_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/openexrheaders/OpenEXR)
 
 set(OPENEXR_INCLUDE_DIRS
@@ -91,15 +91,15 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 # Build Thread Building Blocks (main shared libraries only)
 set(TBB_BUILD_SHARED          ON  CACHE BOOL " " FORCE)
-set(TBB_BUILD_STATIC          OFF CACHE BOOL " " FORCE)
+set(TBB_BUILD_STATIC          ON CACHE BOOL " " FORCE)
 set(TBB_BUILD_TESTS           OFF CACHE BOOL " " FORCE)
 set(TBB_BUILD_TBBMALLOC       OFF CACHE BOOL " " FORCE)
 set(TBB_BUILD_TBBMALLOC_PROXY OFF CACHE BOOL " " FORCE)
 add_subdirectory(tbb)
-set_property(TARGET tbb tbb_def_files PROPERTY FOLDER "dependencies")
+set_property(TARGET tbb tbb_static tbb_def_files PROPERTY FOLDER "dependencies")
 set(TBB_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/tbb/include)
 set(TBB_INCLUDE_DIRS ${TBB_INCLUDE_DIRS} PARENT_SCOPE)
-set(Tbb_TBB_LIBRARY tbb)
+set(Tbb_TBB_LIBRARY tbb_static)
 set(Tbb_TBB_LIBRARY ${Tbb_TBB_LIBRARY} PARENT_SCOPE)
 
 # Build GLFW

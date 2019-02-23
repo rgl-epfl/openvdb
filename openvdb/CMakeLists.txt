@@ -56,7 +56,7 @@ ELSE ()
   SET ( GLFW_INCLUDE_DIRECTORY  ${GLFW_INCLUDE_DIR} CACHE STRING "GLFW include directory")
 ENDIF ()
 
-IF (WIN32)
+IF (WIN32 AND OPENVDB_BUILD_VIEWER)
   FIND_PACKAGE ( GLEW REQUIRED )
 ELSE ()
   FIND_PACKAGE ( Threads REQUIRED )
@@ -128,7 +128,7 @@ INCLUDE_DIRECTORIES (${ILMBASE_INCLUDE_DIRS} )
 INCLUDE_DIRECTORIES (${OPENEXR_INCLUDE_DIRS} )
 INCLUDE_DIRECTORIES ( SYSTEM ${GLFW_INCLUDE_DIRECTORY} )
 
-IF (WIN32)
+IF (WIN32 AND OPENVDB_BUILD_VIEWER)
   INCLUDE_DIRECTORIES ( SYSTEM ${GLEW_INCLUDE_DIR} )
 ENDIF ()
 
@@ -238,13 +238,21 @@ ADD_EXECUTABLE ( vdb_print
   ${VDB_PRINT_SOURCE_FILES}
   )
 
-TARGET_LINK_LIBRARIES ( vdb_print
-  openvdb_shared
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${BLOSC_blosc_LIBRARY}
-  m
-  stdc++
-  )
+IF (WIN32)
+  TARGET_LINK_LIBRARIES ( vdb_print
+    openvdb_shared
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${BLOSC_blosc_LIBRARY}
+    )
+else()
+  TARGET_LINK_LIBRARIES ( vdb_print
+    openvdb_shared
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${BLOSC_blosc_LIBRARY}
+    m
+    stdc++
+    )
+endif()
 
 SET ( VDB_RENDER_SOURCE_FILES cmd/openvdb_render/main.cc )
 SET_SOURCE_FILES_PROPERTIES ( ${VDB_RENDER_SOURCE_FILES}
@@ -255,17 +263,27 @@ ADD_EXECUTABLE ( vdb_render
   ${VDB_RENDER_SOURCE_FILES}
   )
 
-TARGET_LINK_LIBRARIES ( vdb_render
+IF (WIN32)
+  TARGET_LINK_LIBRARIES ( vdb_render
   openvdb_shared
   ${CMAKE_THREAD_LIBS_INIT}
   ${BLOSC_blosc_LIBRARY}
   ${Openexr_ILMIMF_LIBRARY}
   ${Ilmbase_ILMTHREAD_LIBRARY}
   ${Ilmbase_IEX_LIBRARY}
-  m
-  stdc++
   )
-
+else()
+  TARGET_LINK_LIBRARIES ( vdb_render
+    openvdb_shared
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${BLOSC_blosc_LIBRARY}
+    ${Openexr_ILMIMF_LIBRARY}
+    ${Ilmbase_ILMTHREAD_LIBRARY}
+    ${Ilmbase_IEX_LIBRARY}
+    m
+    stdc++
+    )
+endif()
 SET ( VDB_VIEW_SOURCE_FILES
   cmd/openvdb_view/main.cc
   viewer/Camera.cc
