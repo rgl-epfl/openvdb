@@ -15,6 +15,10 @@ if(POLICY CMP0074)
   cmake_policy(SET CMP0074 NEW)
 endif()
 
+if (POLICY CMP0072)
+  cmake_policy(SET CMP0072 NEW) # OpenGL policy
+endif()
+
 ###### OpenVDB Core Options
 
 option(OPENVDB_CORE_SHARED "Build dynamically linked version of the core library." ON)
@@ -49,8 +53,10 @@ message(STATUS "----------------------------------------------------")
 # Collect and configure lib dependencies
 
 if(USE_EXR)
-  find_package(IlmBase ${MINIMUM_ILMBASE_VERSION} REQUIRED)
-  find_package(OpenEXR ${MINIMUM_OPENEXR_VERSION} REQUIRED)
+  if (NOT OPENVDB_BUILDS_DEPS)
+    find_package(IlmBase ${MINIMUM_ILMBASE_VERSION} REQUIRED)
+    find_package(OpenEXR ${MINIMUM_OPENEXR_VERSION} REQUIRED)
+  endif()
   if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_OPENEXR_VERSION)
     if(${OpenEXR_VERSION} VERSION_LESS FUTURE_MINIMUM_OPENEXR_VERSION)
       message(DEPRECATION "Support for OpenEXR versions < ${FUTURE_MINIMUM_OPENEXR_VERSION} "
@@ -58,7 +64,9 @@ if(USE_EXR)
     endif()
   endif()
 else()
-  find_package(IlmBase ${MINIMUM_ILMBASE_VERSION} REQUIRED COMPONENTS Half)
+  if (NOT OPENVDB_BUILDS_DEPS)
+    find_package(IlmBase ${MINIMUM_ILMBASE_VERSION} REQUIRED COMPONENTS Half)
+  endif()
 endif()
 
 if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_ILMBASE_VERSION)
@@ -68,7 +76,11 @@ if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_ILMBASE_VERSION)
   endif()
 endif()
 
-find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbb)
+
+if (NOT OPENVDB_BUILDS_DEPS)
+  find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbb)
+endif()
+
 
 if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_TBB_VERSION)
   if(${Tbb_VERSION} VERSION_LESS FUTURE_MINIMUM_TBB_VERSION)
@@ -77,14 +89,18 @@ if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_TBB_VERSION)
   endif()
 endif()
 
-find_package(ZLIB ${MINIMUM_ZLIB_VERSION} REQUIRED)
+if (NOT OPENVDB_BUILDS_DEPS)
+  find_package(ZLIB ${MINIMUM_ZLIB_VERSION} REQUIRED)
+endif()
 
 if(USE_LOG4CPLUS)
   find_package(Log4cplus ${MINIMUM_LOG4CPLUS_VERSION} REQUIRED)
 endif()
 
 if(USE_BLOSC)
-  find_package(Blosc ${MINIMUM_BLOSC_VERSION} REQUIRED)
+  if (NOT OPENVDB_BUILDS_DEPS)
+    find_package(Blosc ${MINIMUM_BLOSC_VERSION} REQUIRED)
+  endif()
   if(Blosc_FOUND AND Blosc_VERSION VERSION_GREATER MINIMUM_BLOSC_VERSION)
     message(WARNING "The version of Blosc located is greater than ${MINIMUM_BLOSC_VERSION}. "
       "There have been reported issues with using later versions of Blosc with OpenVDB. "
@@ -130,7 +146,10 @@ if(CONCURRENT_MALLOC STREQUAL "Jemalloc")
     find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbbmalloc tbbmalloc_proxy)
   endif()
 elseif(CONCURRENT_MALLOC STREQUAL "Tbbmalloc")
-  find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbbmalloc tbbmalloc_proxy)
+
+  if (NOT OPENVDB_BUILDS_DEPS)
+    find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbbmalloc tbbmalloc_proxy)
+  endif()
 endif()
 
 # Set deps. Note that the order here is important. If we're building against

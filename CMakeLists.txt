@@ -50,6 +50,13 @@ project(OpenVDB)
 include(CMakeDependentOption)
 include(GNUInstallDirs)
 
+# External dependency builds
+add_definitions(-fPIC)
+add_subdirectory(ext ext_build)
+include_directories(SYSTEM ${OPENEXR_INCLUDE_DIRS})
+
+option(OPENVDB_BUILDS_DEPS "Build the dependencies from the submodules, rather than using find_package" ON )
+
 # todo epydoc and pdflatex
 option(OPENVDB_BUILD_CORE "Enable the core OpenVDB library. Both static and shared versions are enabled by default" ON)
 option(OPENVDB_BUILD_BINARIES "Enable the vdb binaries. Only vdb_print is enabled by default" ON)
